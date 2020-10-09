@@ -72,7 +72,7 @@ function runPrompt() {
 //views all employees
 
 function viewEmployees() {
-    connection.query("SELECT * FROM team", function(err, res) {
+    connection.query("SELECT * FROM employee", function(err, res) {
         if (err) throw err;
 
         console.log(res)
