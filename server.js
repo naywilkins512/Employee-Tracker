@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const cTable = require("console.table");
 
 let connection = mysql.createConnection({
     host: "localhost",
@@ -75,26 +76,30 @@ function viewEmployees() {
     connection.query("SELECT * FROM employee", function(err, res) {
         if (err) throw err;
 
-        console.log(res)
+        console.table(res);
+        runPrompt();
     } )
 };
 
 // views Employees by department
 
 function byDepartment() {
-    connection.query("SELECT department FROM team", function(err, res) {
+    connection.query("SELECT * FROM department", function(err, res) {
         if (err) throw err;
 
-        console.log(res)
-    } )
+        console.table(res);
+        runPrompt();
+    });
+
+    
 };
 
 // views Employees by manager
 
 function byManager() {
-    connection.query("SELECT * FROM team WHERE manager", function(err, res){
+    connection.query("SELECT * FROM role_", function(err, res){
         if (err) throw err;
-        console.log(res)
+        console.table(res);
     })
 };
 
