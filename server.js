@@ -73,33 +73,100 @@ function runPrompt() {
 //views all employees
 
 function viewEmployees() {
-    connection.query("SELECT * FROM employee", function(err, res) {
+    connection.query("SELECT * FROM employee, department, role", function (err, res) {
         if (err) throw err;
 
         console.table(res);
         runPrompt();
-    } )
+    })
 };
 
 // views Employees by department
 
+
 function byDepartment() {
-    connection.query("SELECT * FROM department", function(err, res) {
-        if (err) throw err;
 
-        console.table(res);
-        runPrompt();
-    });
+    inquirer
+        .prompt({
+            name: "department",
+            type: "list",
+            message: "what department would you like to see?",
+            choices: [
+                "Sales",
+                "Front-End",
+                "Back-End",
+                "Management"
 
-    
+            ]
+
+        }).then(function (answer) {
+
+            connection.query("SELECT * FROM department WHERE name = ?", answer.department, function (err, res) {
+                if (err) throw err;
+
+                console.table(res);
+            })
+
+        });
+
+
 };
 
-// views Employees by manager
+// bonus views Employees by manager
 
 function byManager() {
-    connection.query("SELECT * FROM role_", function(err, res){
+    connection.query("SELECT * FROM role", function (err, res) {
         if (err) throw err;
         console.table(res);
     })
 };
+
+
+// add employee
+
+function addEmployee() {
+
+    inquirer
+        .prompt([
+            {
+                name: "firstname",
+                type: "input",
+                message: "What is the employees first name?"
+            },
+            {
+                name: "lastname",
+                type: "input",
+                message: "What is the employees last name?"
+
+            },
+            {
+                name: "role",
+                type: "input",
+                message: "What is the employees role id?"
+            },
+            {
+                name: "manager",
+                type: "input",
+                message: "What is the employees manager id?"
+            }
+
+        ]).then(function (answer) {
+
+            connection.query("INSERT INTO employee SET ?",
+                {
+                    first_name: answer.firstname,
+                    last_name: answer.lastname,
+                    role_id: answer.role,
+                    manager_id: answer.manager
+                },
+                function (err, res) {
+                    if (err) throw err;
+                    console.log("new employee added" + "\n" + JSON.stringify(res))
+
+                }
+            )
+        })
+        
+}
+
 
