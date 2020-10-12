@@ -73,7 +73,7 @@ function runPrompt() {
 //views all employees
 
 function viewEmployees() {
-    connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee INNER JOIN department ON role.department_id = department.department.id", function (err, res) {
+    connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee INNER JOIN role on employee.role_id = role.id INNER JOIN department on role.department_id = department.id", function (err, res) {
         if (err) throw err;
 
         console.table(res);
