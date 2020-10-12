@@ -73,7 +73,7 @@ function runPrompt() {
 //views all employees
 
 function viewEmployees() {
-    connection.query("SELECT * FROM employee, department, role", function (err, res) {
+    connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee INNER JOIN department ON role.department_id = department.department.id", function (err, res) {
         if (err) throw err;
 
         console.table(res);
@@ -115,7 +115,7 @@ function byDepartment() {
 // bonus views Employees by manager
 
 function byManager() {
-    connection.query("SELECT * FROM role", function (err, res) {
+    connection.query("SELECT * FROM department", function (err, res) {
         if (err) throw err;
         console.table(res);
     })
@@ -161,12 +161,13 @@ function addEmployee() {
                 },
                 function (err, res) {
                     if (err) throw err;
-                    console.log("new employee added" + "\n" + JSON.stringify(res))
+                    console.log("new employee added", JSON.stringify(res))
 
                 }
             )
         })
         
 }
+        
 
 
