@@ -39,7 +39,7 @@ function runPrompt() {
                 case "View All Employees":
                     viewEmployees()
                     break;
-                case "View All Employees By Department":
+                case "View All Departments":
                     byDepartment()
                     break;
                 case "View All Employees By Manager":
@@ -73,12 +73,13 @@ function runPrompt() {
 //views all employees
 
 function viewEmployees() {
-    connection.query("SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee INNER JOIN role on employee.role_id = role.id INNER JOIN department on role.department_id = department.id", function (err, res) {
-        if (err) throw err;
+    connection.query(
+        "SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee INNER JOIN role on employee.role_id = role.id INNER JOIN department on role.department_id = department.id", function (err, res) {
+            if (err) throw err;
 
-        console.table(res);
-        runPrompt();
-    })
+            console.table(res);
+            runPrompt();
+        })
 };
 
 // views Employees by department
@@ -86,36 +87,19 @@ function viewEmployees() {
 
 function byDepartment() {
 
-    inquirer
-        .prompt({
-            name: "department",
-            type: "list",
-            message: "what department would you like to see?",
-            choices: [
-                "Sales",
-                "Front-End",
-                "Back-End",
-                "Management"
-
-            ]
-
-        }).then(function (answer) {
-
-            connection.query("SELECT * FROM department WHERE name = ?", answer.department, function (err, res) {
+            connection.query("SELECT * FROM department", function (err, res) {
                 if (err) throw err;
 
                 console.table(res);
+                runPrompt();
             })
-
-        });
-
 
 };
 
 // bonus views Employees by manager
 
 function byManager() {
-    connection.query("SELECT * FROM department", function (err, res) {
+    connection.query("SELECT * FROM role", function (err, res) {
         if (err) throw err;
         console.table(res);
     })
@@ -166,8 +150,58 @@ function addEmployee() {
                 }
             )
         })
-        
+
 }
-        
 
 
+
+function updateEmployeeRole() {
+    let employees = []
+    let roles = []
+
+    connection.query("SELECT employee.first_name, employee.last_name, employee.id FROM employee", function (err, employeeRes) {
+        if (err) throw err;
+        employees = employeeRes;
+
+        connection.query("SELECT role.title, role.id FROM role", function (err, roleRes) {
+            if (err) throw err;
+            roles = roleRes;
+            console.log(roles.map((role) => {
+                return {
+                    name: role.title,
+                    value: role.id
+                }
+            }))
+
+            inquirer
+                .prompt([{
+                    name: "employeeid",
+                    type: "list",
+                    message: "which employee would you like to update?",
+                    choices: employees.map((employee) => {
+                        return {
+                            name: employee.first_name + " " + employee.last_name,
+                            value: employee.id
+                        }
+                    })
+                },
+                {
+                    name: "roleid",
+                    type: "list",
+                    message: "What is the new role you'd like to assign them to?",
+                    choices: roles.map((role) => {
+                        return {
+                            name: role.title,
+                            value: role.id
+                        }
+                    })
+                }]).then(function (answer) {
+                    connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [answer.roleid, answer.employeeid], function (err, res) {
+                        if (err) throw err;
+                        console.log(res);
+                        runPrompt();
+                    })
+                })
+        })
+    })
+}
