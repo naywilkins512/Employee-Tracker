@@ -24,7 +24,7 @@ function runPrompt() {
             message: "what would you like to do?",
             choices: [
                 "View All Employees",
-                "View All Employees By Department",
+                "View All Departments",
                 "View All Employees By Manager",
                 "Add An Employee",
                 "Remove An Employee",
