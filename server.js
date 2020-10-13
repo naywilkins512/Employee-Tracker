@@ -89,7 +89,7 @@ function runPrompt() {
 
 function viewEmployees() {
     connection.query(
-        "SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee INNER JOIN role on employee.role_id = role.id INNER JOIN department on role.department_id = department.id", function (err, res) {
+        "SELECT employee.first_name, employee.last_name, employee.manager_id, role.title, role.salary, department.name FROM employee INNER JOIN role on employee.role_id = role.id INNER JOIN department on role.department_id = department.id", function (err, res) {
             if (err) throw err;
 
             console.table(res);
@@ -200,51 +200,75 @@ function addRole() {
 // add employee
 
 function addEmployee() {
+    let roles = [];
+    // let managers = [];
 
-    inquirer
-        .prompt([
-            {
-                name: "firstname",
-                type: "input",
-                message: "What is the employees first name?"
-            },
-            {
-                name: "lastname",
-                type: "input",
-                message: "What is the employees last name?"
+    connection.query("SELECT role.title, role.id FROM role", function (err, roleRes) {
+        if (err) throw err;
+        roles = roleRes;
+        console.log(roles);
 
-            },
-            {
-                name: "role",
-                type: "input",
-                message: "What is the employees role id?"
-            },
-            {
-                name: "manager",
-                type: "input",
-                message: "What is the employees manager id?"
-            }
+        connection.query("SELECT department.name, department.id FROM department", function (err, managerRes) {
+            if (err) throw err;
+            managers = managerRes;
+            console.log(managers);
 
-        ]).then(function (answer) {
+            inquirer
+                .prompt([
+                    {
+                        name: "firstname",
+                        type: "input",
+                        message: "What is the employees first name?"
+                    },
+                    {
+                        name: "lastname",
+                        type: "input",
+                        message: "What is the employees last name?"
 
-            connection.query("INSERT INTO employee SET ?",
-                {
-                    first_name: answer.firstname,
-                    last_name: answer.lastname,
-                    role_id: answer.role,
-                    manager_id: answer.manager
-                },
-                function (err, res) {
-                    if (err) throw err;
-                    console.log("new employee added", JSON.stringify(res))
+                    },
+                    {
+                        name: "role",
+                        type: "list",
+                        message: "What is the employees role?",
+                        choices: roles.map((role) => {
+                            return {
+                                name: role.title,
+                                value: role.id
+                            }
+                        })
+                    },
+                    {
+                        name: "manager",
+                        type: "list",
+                        message: "Who is the employees manager?",
+                        choices: managers.map((manager) => {
+                            return {
+                                name: manager.title,
+                                value: manager.id
+                            }
+                        })
+                    }
 
-                }
-            )
+                ]).then(function (answer) {
+
+                    connection.query("INSERT INTO employee SET ?",
+                        {
+                            first_name: answer.firstname,
+                            last_name: answer.lastname,
+                            role_id: answer.role,
+                            // manager_id: answer.manager
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            console.log("new employee added", JSON.stringify(res))
+
+                        }
+                    )
+                })
+
         })
-
+    })
 }
-
-
 
 
 function updateEmployeeRole() {
@@ -291,6 +315,7 @@ function updateEmployeeRole() {
         })
     })
 }
+
 
 // bonus views Employees by manager
 
