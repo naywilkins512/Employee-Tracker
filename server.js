@@ -25,13 +25,16 @@ function runPrompt() {
             choices: [
                 "View All Employees",
                 "View All Departments",
-                "View All Employees By Manager",
+                "View All Roles",
                 "Add An Employee",
-                "Remove An Employee",
                 "Add A Department",
+                "Add A Role",
                 "Update Employee Role",
+                "View All Employees By Manager",
+                "Remove An Employee",
                 "Update Employee Manager",
-                "View All Roles"
+                "exit"
+
             ]
         })
         .then(function (answer) {
@@ -40,28 +43,40 @@ function runPrompt() {
                     viewEmployees()
                     break;
                 case "View All Departments":
-                    byDepartment()
+                    viewAllDepartments()
                     break;
-                case "View All Employees By Manager":
-                    byManager()
+                case "View All Roles":
+                    viewAllRoles();
                     break;
+
+                // ---------------------------------------------------
+
                 case "Add An Employee":
-                    addEmployee()
-                    break;
-                case "Remove An Employee":
-                    removeEmployee()
+                    addEmployee();
                     break;
                 case "Add A Department":
                     addDepartment()
                     break;
+                case "Add A Role":
+                    addRole()
+                    break;
+                // ---------------------------------------------------
+
                 case "Update Employee Role":
                     updateEmployeeRole()
                     break;
+
+                // ---------------------------------------------------
+
+                case "View All Employees By Manager":
+                    byManager()
+                    break;
+                case "Remove An Employee":
+                    removeEmployee()
+                    break;
+
                 case "Update Employee Manager":
                     updateManager()
-                    break;
-                case "View All Roles":
-                    viewAllRoles();
                     break;
                 case "exit":
                     connection.end()
@@ -82,29 +97,105 @@ function viewEmployees() {
         })
 };
 
-// views Employees by department
+// views all departments
 
 
-function byDepartment() {
+function viewAllDepartments() {
 
-            connection.query("SELECT * FROM department", function (err, res) {
-                if (err) throw err;
+    connection.query("SELECT * FROM department", function (err, res) {
+        if (err) throw err;
 
-                console.table(res);
-                runPrompt();
-            })
+        console.table(res);
+        runPrompt();
+    })
 
 };
 
-// bonus views Employees by manager
+//views all roles
 
-function byManager() {
+function viewAllRoles() {
+
     connection.query("SELECT * FROM role", function (err, res) {
         if (err) throw err;
+
         console.table(res);
+        runPrompt();
     })
+
 };
 
+function addDepartment() {
+
+    inquirer
+        .prompt(
+            {
+                name: "newDepartment",
+                type: "input",
+                message: "What is the name of the department you'd like to add?"
+            }
+
+        ).then(function (answer) {
+
+            connection.query("INSERT INTO department SET ?", { name: answer.newDepartment }, function (err, res) {
+                if (err) throw err;
+                console.log("new department added", JSON.stringify(res))
+                runPrompt()
+            }
+            )
+        })
+
+};
+
+function addRole() {
+    let departments = [];
+
+    connection.query("SELECT department.name, department.id FROM department", function (err, departmentRes) {
+        if (err) throw err;
+        departments = departmentRes;
+
+        inquirer
+            .prompt([
+                {
+                    name: "newRoleTitle",
+                    type: "input",
+                    message: "What is the name of the role you'd like to add?"
+                },
+                {
+                    name: "newRoleSalary",
+                    type: "input",
+                    message: "What is the salary of the role you're adding?"
+                },
+                {
+                    name: "newRoleDepartment",
+                    type: "list",
+                    message: "What is the department of the role you're adding?",
+                    choices: departments.map((department) => {
+                        return {
+                            name: department.name,
+                            value: department.id
+                        }
+                    })
+                }
+
+
+            ]).then(function (answer) {
+
+                connection.query("INSERT INTO role SET ?",
+                    {
+                        title: answer.newRoleTitle,
+                        salary: answer.newRoleSalary,
+                        department_id: answer.newRoleDepartment
+
+                    }, function (err, res) {
+                        if (err) throw err;
+                        console.log("new role added")
+                        runPrompt();
+                    }
+                )
+            })
+
+    })
+}
 
 // add employee
 
@@ -155,6 +246,7 @@ function addEmployee() {
 
 
 
+
 function updateEmployeeRole() {
     let employees = []
     let roles = []
@@ -166,12 +258,6 @@ function updateEmployeeRole() {
         connection.query("SELECT role.title, role.id FROM role", function (err, roleRes) {
             if (err) throw err;
             roles = roleRes;
-            console.log(roles.map((role) => {
-                return {
-                    name: role.title,
-                    value: role.id
-                }
-            }))
 
             inquirer
                 .prompt([{
@@ -205,3 +291,12 @@ function updateEmployeeRole() {
         })
     })
 }
+
+// bonus views Employees by manager
+
+function byManager() {
+    connection.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+        console.table(res);
+    })
+};
