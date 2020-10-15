@@ -20,7 +20,7 @@
 
   type node server.js and follow the prompts!
 
-  
+  ![Application](Assets/Application2.gif)
 
   # License
   Copyright (c) 2020, Nay Wilkins
