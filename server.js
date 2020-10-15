@@ -206,12 +206,12 @@ function addEmployee() {
     connection.query("SELECT role.title, role.id FROM role", function (err, roleRes) {
         if (err) throw err;
         roles = roleRes;
-        console.log(roles);
+        
 
         connection.query("SELECT department.name, department.id FROM department", function (err, managerRes) {
             if (err) throw err;
             managers = managerRes;
-            console.log(managers);
+            
 
             inquirer
                 .prompt([
