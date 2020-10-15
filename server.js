@@ -30,9 +30,9 @@ function runPrompt() {
                 "Add A Department",
                 "Add A Role",
                 "Update Employee Role",
-                "View All Employees By Manager",
-                "Remove An Employee",
-                "Update Employee Manager",
+                // "View All Employees By Manager",
+                // "Remove An Employee",
+                // "Update Employee Manager",
                 "exit"
 
             ]
@@ -68,16 +68,16 @@ function runPrompt() {
 
                 // ---------------------------------------------------
 
-                case "View All Employees By Manager":
-                    byManager()
-                    break;
-                case "Remove An Employee":
-                    removeEmployee()
-                    break;
+                // case "View All Employees By Manager":
+                //     byManager()
+                //     break;
+                // case "Remove An Employee":
+                //     removeEmployee()
+                //     break;
 
-                case "Update Employee Manager":
-                    updateManager()
-                    break;
+                // case "Update Employee Manager":
+                //     updateManager()
+                //     break;
                 case "exit":
                     connection.end()
                     break;
@@ -319,9 +319,9 @@ function updateEmployeeRole() {
 
 // bonus views Employees by manager
 
-function byManager() {
-    connection.query("SELECT * FROM role", function (err, res) {
-        if (err) throw err;
-        console.table(res);
-    })
-};
+// function byManager() {
+//     connection.query("SELECT * FROM role", function (err, res) {
+//         if (err) throw err;
+//         console.table(res);
+//     })
+// };
