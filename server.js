@@ -138,7 +138,7 @@ function addDepartment() {
 
             connection.query("INSERT INTO department SET ?", { name: answer.newDepartment }, function (err, res) {
                 if (err) throw err;
-                console.log("new department added", JSON.stringify(res))
+                console.log("new department added")
                 runPrompt()
             }
             )
@@ -260,7 +260,8 @@ function addEmployee() {
                         },
                         function (err, res) {
                             if (err) throw err;
-                            console.log("new employee added", JSON.stringify(res))
+                            console.log("new employee added")
+                            runPrompt();
 
                         }
                     )
@@ -308,7 +309,7 @@ function updateEmployeeRole() {
                 }]).then(function (answer) {
                     connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [answer.roleid, answer.employeeid], function (err, res) {
                         if (err) throw err;
-                        console.log(res);
+                        console.log("Updated Employee Role!");
                         runPrompt();
                     })
                 })
