@@ -2,7 +2,11 @@
   # Employee Tracker
   ![Shield](https://img.shields.io/static/v1?label=License&message=MIT_license&color=green)
   # Description
-  A command line application that manages a company's employees using node, inquirer, and mySQL
+  A command line application that manages a company's employees using node, inquirer, and mySQL.
+
+  ![Application](Assets/Application.gif)
+
+
   # Table Of Contents
   
   - [Installation Instructions](#installation-instructions)
@@ -11,12 +15,13 @@
   - [Contributing](#contributing)
   - [Tests](#tests)
   
-  # Installation Instructions
-  
-  
-  git clone it to your local and type node server.js
+
   # Usage 
+
+  type node server.js and follow the prompts!
+
   
+
   # License
   Copyright (c) 2020, Nay Wilkins
 All rights reserved.
@@ -35,8 +40,6 @@ LICENSE file in the root directory of this source tree.
   - Open a pull request
   
   
-  # Tests
-  n/a
   # Questions
   
   [Github Profile Link](https://github.com/naywilkins512)
