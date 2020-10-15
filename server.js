@@ -12,7 +12,7 @@ let connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n");
+    console.log("Welcome to your Employee Tracker!" + "\n" + ":)" + "\n" + "securely connected to your database as id " + connection.threadId + "\n");
     runPrompt();
 })
 
